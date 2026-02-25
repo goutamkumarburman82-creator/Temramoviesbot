@@ -1,13 +1,15 @@
 import os
-from pyrogram import Client, filters
-from flask import Flask
 import threading
+from flask import Flask
+from pyrogram import Client, filters
 
+# ---------- ENV ----------
 api_id = int(os.environ.get("35790707"))
 api_hash = os.environ.get("44753bcac8911c81028f009377368330")
 bot_token = os.environ.get("8779345278:AAGUeRRmEx0C2MP2q4xDmNQUVlcyh_GRRR4")
 CHANNEL_ID = int(os.environ.get("-1003865059298"))
 
+# ---------- PYROGRAM ----------
 bot = Client(
     "temramovies",
     api_id=api_id,
@@ -31,17 +33,18 @@ async def search_movie(client, message):
     if not found:
         await message.reply("❌ Movie not found")
 
-# -------- Flask Web Server --------
+# ---------- FLASK ----------
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Temramovies Bot is Running"
+    return "Temramovies Bot Running"
 
 def run_flask():
-    app.run(host="0.0.0.0", port=10000)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
 
-# -------- Start Both --------
+# ---------- START ----------
 if __name__ == "__main__":
     threading.Thread(target=run_flask).start()
     bot.run()
